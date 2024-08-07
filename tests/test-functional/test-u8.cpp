@@ -11,6 +11,7 @@
 #include <bitset>
 #include <cassert>
 #include <cstdlib>
+#include <utility> 
 
 
 void
@@ -508,6 +509,31 @@ testFunctional::testU8()
     }
     std::cout << "[PASSED] pimShiftBitsLeft" << std::endl;
   }
+
+  // Test bitslice and
+  {
+    status = pimBitslicedAnd(std::make_pair(obj1, 0), std::make_pair(obj2, 0), std::make_pair(obj3, 0)); 
+    assert(status == PIM_OK);
+    status = pimCopyDeviceToHost(obj3, (void *)dest.data());
+    assert(status == PIM_OK);
+    for (unsigned i = 0; i < numElements; ++i) {
+      assert(dest[i] == static_cast<uint8_t>(((src1[i] & (1LL << 0)) & (src2[i] & (1LL << 0)))));
+    }
+    std::cout << "[PASSED] pimBitslicedAnd" << std::endl;
+  }
+
+  // Test bitslice or
+  {
+    status = pimBitslicedOr(std::make_pair(obj1, 0), std::make_pair(obj2, 0), std::make_pair(obj3, 0));
+    assert(status == PIM_OK);
+    status = pimCopyDeviceToHost(obj3, (void *)dest.data());
+    assert(status == PIM_OK);
+    for (unsigned i = 0; i < numElements; ++i) {
+      assert(dest[i] == static_cast<uint8_t>((src1[i] & (1LL << 0)) | (src2[i] & (1LL << 0))));
+    }
+    std::cout << "[PASSED] pimBitslicedOr" << std::endl;
+  }
+
 
   pimShowStats();
 

@@ -105,6 +105,11 @@ public:
   bool pimShiftElementsLeft(PimObjId src);
   bool pimShiftBitsRight(PimObjId src, PimObjId dest, unsigned shiftAmount);
   bool pimShiftBitsLeft(PimObjId src, PimObjId dest, unsigned shiftAmount);
+  bool pimBitslicedAnd(std::pair<PimObjId, uint8_t> src1, std::pair<PimObjId, uint8_t> src2, std::pair<PimObjId, uint8_t> dest);  
+  bool pimBitslicedOr(std::pair<PimObjId, uint8_t> src1, std::pair<PimObjId, uint8_t> src2, std::pair<PimObjId, uint8_t> dest);  
+  bool pimBitslicedXor(std::pair<PimObjId, uint8_t> src1, std::pair<PimObjId, uint8_t> src2, std::pair<PimObjId, uint8_t> dest);  
+  bool pimBitslicedXnor(std::pair<PimObjId, uint8_t> src1, std::pair<PimObjId, uint8_t> src2, std::pair<PimObjId, uint8_t> dest);  
+  bool pimBitslicedNot(std::pair<PimObjId, uint8_t> src, std::pair<PimObjId, uint8_t> dest);  
 
   // BitSIMD-V micro ops
   bool pimOpReadRowToSa(PimObjId src, unsigned ofst);

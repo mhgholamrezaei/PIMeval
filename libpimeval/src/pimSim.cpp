@@ -809,6 +809,36 @@ pimSim::pimShiftBitsLeft(PimObjId src, PimObjId dest, unsigned shiftAmount)
   return m_device->executeCmd(std::move(cmd));
 }
 
+bool 
+pimSim::pimBitslicedAnd(std::pair<PimObjId, uint8_t> src1, std::pair<PimObjId, uint8_t> src2, std::pair<PimObjId, uint8_t> dest) 
+{
+  return true;
+}
+
+bool 
+pimSim::pimBitslicedOr(std::pair<PimObjId, uint8_t> src1, std::pair<PimObjId, uint8_t> src2, std::pair<PimObjId, uint8_t> dest) 
+{
+  return true;
+}
+
+bool 
+pimSim::pimBitslicedXor(std::pair<PimObjId, uint8_t> src1, std::pair<PimObjId, uint8_t> src2, std::pair<PimObjId, uint8_t> dest)
+{
+  return true;
+}
+
+bool 
+pimSim::pimBitslicedXnor(std::pair<PimObjId, uint8_t> src1, std::pair<PimObjId, uint8_t> src2, std::pair<PimObjId, uint8_t> dest) 
+{
+  return true;
+}
+
+bool 
+pimSim::pimBitslicedNot(std::pair<PimObjId, uint8_t> src, std::pair<PimObjId, uint8_t> dest) 
+{
+  return true;
+}
+
 bool
 pimSim::pimOpReadRowToSa(PimObjId objId, unsigned ofst)
 {

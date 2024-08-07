@@ -9,6 +9,7 @@
 
 #include <cstdint>
 #include <cstdarg>
+#include <utility> 
 
 //! @brief  PIM API return status
 enum PimStatus {
@@ -125,6 +126,12 @@ PimStatus pimLTScalar(PimObjId src, PimObjId dest, uint64_t scalerValue);
 PimStatus pimEQScalar(PimObjId src, PimObjId dest, uint64_t scalerValue);
 PimStatus pimMinScalar(PimObjId src, PimObjId dest, uint64_t scalerValue);
 PimStatus pimMaxScalar(PimObjId src, PimObjId dest, uint64_t scalerValue);
+// Logic Operations Between Bitslices 
+PimStatus pimBitslicedAnd(std::pair<PimObjId, uint8_t> src1, std::pair<PimObjId, uint8_t> src2, std::pair<PimObjId, uint8_t> dest);  
+PimStatus pimBitslicedOr(std::pair<PimObjId, uint8_t> src1, std::pair<PimObjId, uint8_t> src2, std::pair<PimObjId, uint8_t> dest);  
+PimStatus pimBitslicedXor(std::pair<PimObjId, uint8_t> src1, std::pair<PimObjId, uint8_t> src2, std::pair<PimObjId, uint8_t> dest);  
+PimStatus pimBitslicedXnor(std::pair<PimObjId, uint8_t> src1, std::pair<PimObjId, uint8_t> src2, std::pair<PimObjId, uint8_t> dest);  
+PimStatus pimBitslicedNot(std::pair<PimObjId, uint8_t> src, std::pair<PimObjId, uint8_t> dest);  
 // multiply src1 with scalerValue and add the multiplication result with src2. Save the result to dest. 
 PimStatus pimScaledAdd(PimObjId src1, PimObjId src2, PimObjId dest, uint64_t scalerValue);
 PimStatus pimPopCount(PimObjId src, PimObjId dest);

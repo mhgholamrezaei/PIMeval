@@ -336,6 +336,42 @@ PimStatus pimMaxScalar(PimObjId src, PimObjId dest, uint64_t scalerValue)
   return ok ? PIM_OK : PIM_ERROR;
 }
 
+PimStatus 
+pimBitslicedAnd(std::pair<PimObjId, uint8_t> src1, std::pair<PimObjId, uint8_t> src2, std::pair<PimObjId, uint8_t> dest)
+{
+  printf("DEBUG: src1.first = %u, src1.second = %u\n", src1.first, src1.second);
+  PimStatus ok = PIM_OK;
+  return ok;
+}
+
+PimStatus 
+pimBitslicedOr(std::pair<PimObjId, uint8_t> src1, std::pair<PimObjId, uint8_t> src2, std::pair<PimObjId, uint8_t> dest) 
+{
+  PimStatus ok = PIM_OK;
+  return ok;
+}
+
+PimStatus 
+pimBitslicedXor(std::pair<PimObjId, uint8_t> src1, std::pair<PimObjId, uint8_t> src2, std::pair<PimObjId, uint8_t> dest)
+{
+  PimStatus ok = PIM_OK;
+  return ok;
+}
+
+PimStatus 
+pimBitslicedXnor(std::pair<PimObjId, uint8_t> src1, std::pair<PimObjId, uint8_t> src2, std::pair<PimObjId, uint8_t> dest)
+{
+  PimStatus ok = PIM_OK;
+  return ok;
+}
+
+PimStatus 
+pimBitslicedNot(std::pair<PimObjId, uint8_t> src, std::pair<PimObjId, uint8_t> dest)
+{
+  PimStatus ok = PIM_OK;
+  return ok;
+}
+
 PimStatus pimScaledAdd(PimObjId src1, PimObjId src2, PimObjId dest, uint64_t scalerValue) 
 {
   bool ok = pimSim::get()->pimScaledAdd(src1, src2, dest, scalerValue);
