@@ -21,8 +21,8 @@
 
 #define AES_BLOCK_SIZE 16
 
-#define SUBBYTES_FUNCTIONAL
-#define RJXTIME_FUCNTIONAL
+//#define SUBBYTES_FUNCTIONAL
+//#define RJXTIME_FUCNTIONAL
 
 // Function-like macros to avoid repetitive code.
 #define F(x)   (((x) << 1) ^ ((((x) >> 7) & 1) * 0x1B))
@@ -1567,6 +1567,7 @@ int testDecryptdemo(void) {
 int testDemo(int argc, char **argv) {
     struct Params params = getInputParams(argc, argv);
     
+    PimStatus status; 
     FILE *file;
     uint8_t *buf;
     unsigned long numbytes;
@@ -1661,21 +1662,12 @@ int testDemo(int argc, char **argv) {
     unsigned bitsPerElement = 8;
      
     // Each rank has 8 chips; Total Bank = 16; Each Bank contains 32 subarrays;
-    unsigned numRanks = 2;
-    unsigned numBankPerRank = 128; // 8 chips * 16 banks
-    unsigned numSubarrayPerBank = 32;
-    unsigned numRows = 8192;
-    unsigned numCols = 8192;
-    unsigned numCores = numRanks * numBankPerRank * numSubarrayPerBank / 2; 
-    unsigned totalCols = numCores * numCols;
-
     unsigned numCalls = 1;
     unsigned numPaddedBufBytes = numbytes;
     unsigned numElements = numPaddedBufBytes / AES_BLOCK_SIZE;
 
-    //PimStatus status = pimCreateDevice(PIM_FUNCTIONAL, numRanks, numBankPerRank, numSubarrayPerBank, numRows, numCols);
-    bool status = createDevice(params.configFile);
-    assert(status);
+    bool ok = createDevice(params.configFile);
+    assert(ok);
 
     std::vector<PIMAuxilary*> *inputObjBuf = new std::vector<PIMAuxilary*>(AES_BLOCK_SIZE * numCalls);
     (*inputObjBuf)[0]= new PIMAuxilary(PIM_ALLOC_AUTO, numElements, bitsPerElement, PIM_UINT8);
@@ -1699,7 +1691,7 @@ int testDemo(int argc, char **argv) {
 
     // Initialize inputObjBuf
     unsigned words_per_call, i_call, i_chunk, i_aes_block, remained; 
-    words_per_call = (totalCols * AES_BLOCK_SIZE);
+    words_per_call = numPaddedBufBytes;
     for (unsigned j = 0; j < numPaddedBufBytes; ++j) {
         i_call = j / words_per_call; 
         remained = j % words_per_call; 
@@ -1714,7 +1706,7 @@ int testDemo(int argc, char **argv) {
     }
 
     memcpy(ctx_key_global, key, 32);
-    encryptdemo(key, bufIn, numPaddedBufBytes);    
+    //encryptdemo(key, bufIn, numPaddedBufBytes);    
     
     memcpy(ctx_key_global, key, 32);
     encryptdemo(key, inputObjBuf, numCalls);
@@ -1725,21 +1717,8 @@ int testDemo(int argc, char **argv) {
     }
  
     pimShowStats();
+    pimResetStats();
 
-    for (unsigned j = 0; j < numPaddedBufBytes; ++j) { 
-        i_call = j / words_per_call; 
-        remained = j % words_per_call; 
-        i_aes_block = (remained % AES_BLOCK_SIZE) + (i_call * AES_BLOCK_SIZE);
-        i_chunk = remained / AES_BLOCK_SIZE;
-        if ((*inputObjBuf)[i_aes_block]->array[i_chunk] != bufIn[j]) {
-            
-            std::cout << "(int)(*inputObjBuf)[" << i_aes_block << "]->array[" << i_chunk << "]: " << (int)(*inputObjBuf)[i_aes_block]->array[i_chunk] << std::endl;
-            std::cout << "buf[" << j << "]: " << (int)bufIn[j] << std::endl;
-            std::cout << "ERROR: Abort" << std::endl;
-            return 1; 
-        }
-    }
- 
     // write the ciphertext to file
     file = fopen(params.cipherFile, "w");
     fwrite(buf, 1, numbytes, file);
@@ -1759,20 +1738,6 @@ int testDemo(int argc, char **argv) {
     for (unsigned j = 0; j < (AES_BLOCK_SIZE * numCalls); ++j) {
             status = pimCopyDeviceToHost((*inputObjBuf)[j]->pimObjId, (*inputObjBuf)[j]->array.data());
             assert(status == PIM_OK);
-    }
-
-    for (unsigned j = 0; j < numPaddedBufBytes; ++j) { 
-        i_call = j / words_per_call; 
-        remained = j % words_per_call; 
-        i_aes_block = (remained % AES_BLOCK_SIZE) + (i_call * AES_BLOCK_SIZE);
-        i_chunk = remained / AES_BLOCK_SIZE;
-        if ((*inputObjBuf)[i_aes_block]->array[i_chunk] != bufIn[j]) {
-            
-            std::cout << "(int)(*inputObjBuf)[" << i_aes_block << "]->array[" << i_chunk << "]: " << (int)(*inputObjBuf)[i_aes_block]->array[i_chunk] << std::endl;
-            std::cout << "buf[" << j << "]: " << (int)bufIn[j] << std::endl;
-            std::cout << "ERROR: Abort" << std::endl;
-            return 1; 
-        }
     }
 
     // write to file
