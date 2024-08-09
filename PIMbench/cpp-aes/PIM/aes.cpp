@@ -3,6 +3,7 @@
 
 #include "libpimeval.h"
 #include "PIMAuxilary.h"
+#include "../../util.h"
 #include <iostream> 
 #include <vector>
 #include <cinttypes>
@@ -107,6 +108,7 @@ const uint8_t sboxinv[256] = {
 typedef struct Params
 {
     uint64_t inputSize;
+    const char *configFile;
     const char *keyFile;
     const char *inputFile;
     const char *cipherFile;
@@ -1671,8 +1673,9 @@ int testDemo(int argc, char **argv) {
     unsigned numPaddedBufBytes = numbytes;
     unsigned numElements = numPaddedBufBytes / AES_BLOCK_SIZE;
 
-    PimStatus status = pimCreateDevice(PIM_FUNCTIONAL, numRanks, numBankPerRank, numSubarrayPerBank, numRows, numCols);
-    assert(status == PIM_OK);
+    //PimStatus status = pimCreateDevice(PIM_FUNCTIONAL, numRanks, numBankPerRank, numSubarrayPerBank, numRows, numCols);
+    bool status = createDevice(params.configFile);
+    assert(status);
 
     std::vector<PIMAuxilary*> *inputObjBuf = new std::vector<PIMAuxilary*>(AES_BLOCK_SIZE * numCalls);
     (*inputObjBuf)[0]= new PIMAuxilary(PIM_ALLOC_AUTO, numElements, bitsPerElement, PIM_UINT8);
@@ -2568,6 +2571,7 @@ void usage() {
         "\nUsage:  ./aes.out [options]"
         "\n"
         "\n    -l    input size (default=65536 bytes)"
+        "\n    -f    config file(default=NULL)"
         "\n    -k    key file containing AES key (default=generates key with random numbers)"
         "\n    -i    input file containing AES encrption input(default=generates input with random numbers)"
         "\n    -c    cipher file containing AES encryption output (default=./cipher.txt)"
@@ -2577,10 +2581,10 @@ void usage() {
 }
 
 struct Params getInputParams(int argc, char **argv) {
-    struct Params p = {65536, NULL, NULL, "./cipher.txt", "./output.txt", false};
+    struct Params p = {65536, NULL, NULL, NULL, "./cipher.txt", "./output.txt", false};
     int opt;
 
-    while ((opt = getopt(argc, argv, "hl:k:i:c:o:v:")) >= 0) {
+    while ((opt = getopt(argc, argv, "hl:f:k:i:c:o:v:")) >= 0) {
         switch (opt) {
             case 'h':
                 usage();
@@ -2588,6 +2592,9 @@ struct Params getInputParams(int argc, char **argv) {
                 break;
             case 'l':
                 p.inputSize = strtoull(optarg, NULL, 0);
+                break;
+            case 'f': 
+                p.configFile = optarg;
                 break;
             case 'k':
                 p.keyFile = optarg;
